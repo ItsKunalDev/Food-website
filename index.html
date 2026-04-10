@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spice Routes | Authentic Indian Cuisine</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-pepper-hot"></i> SpiceRoutes
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="cart-icon" id="cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-count">0</span>
+            </div>
+            <div id="auth-section">
+
+                <a href="login.html" class="btn btn-primary" id="login-btn" style="display: none;">Login</a>
+                <div id="user-profile" class="hidden"
+                    style="cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <div id="nav-avatar" class="nav-avatar">A</div>
+                    <span id="user-name" style="display: none;"></span>
+                </div>
+            </div>
+        </div>
+        <div class="mobile-menu-btn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
+
+    <header class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">100% Authentic Taste</div>
+            <h1>Experience the <br><span class="highlight">Magic of Spices</span></h1>
+            <p>From creamy butter chicken to crispy dosas, explore a curated menu of India's most beloved dishes,
+                delivered hot to your door.</p>
+            <div class="hero-buttons">
+                <a href="#menu" class="btn btn-primary btn-large">Explore Menu</a>
+                <button id="how-to-order-btn" class="btn btn-white btn-large">
+                    <i class="fa-solid fa-play" style="color: var(--primary);"></i> How to Order
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="menu-section" id="menu">
+        <div class="section-header">
+            <h2>Our Popular Dishes</h2>
+            <div class="search-filter">
+                <input type="text" id="search-input" placeholder="Search for dishes...">
+                <div class="categories" id="categories">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="North Indian">North Indian</button>
+                    <button class="filter-btn" data-filter="South Indian">South Indian</button>
+                    <button class="filter-btn" data-filter="Street Food">Street Food</button>
+                    <button class="filter-btn" data-filter="Desserts">Desserts</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-container" id="menu-container">
+
+        </div>
+    </section>
+
+
+    <section id="how-to-order" class="how-to-order-section">
+        <div class="section-header">
+            <h2>From Kitchen to Doorstep</h2>
+            <p class="section-subtitle">Watch our quick guide to see how easy it is to get authentic Indian flavors
+                delivered hot to your door.</p>
+        </div>
+        <div class="video-wrapper">
+            <video autoplay muted loop controls class="order-video">
+                <source src="image/Restaurant.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </section>
+
+
+    <section id="about" style="padding: 5rem 5%; text-align: center; background: var(--light);">
+        <h2 style="margin-bottom: 2rem; font-size: 2.5rem;">Authenticity in Every Bite</h2>
+        <p style="max-width: 800px; margin: 0 auto; color: var(--gray); font-size: 1.1rem; line-height: 1.8;">
+            SpiceRoutes was founded with a single mission: to bring the rich, diverse flavors of India directly to you.
+            We source the finest spices and traditional recipes passed down through generations. Whether you crave the
+            fiery heat of a vindaloo or the comforting embrace of a creamy butter chicken, our chefs deliver a culinary
+            journey you won't forget.
+        </p>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3><i class="fa-solid fa-pepper-hot"></i> SpiceRoutes</h3>
+                <p>Delivering authentic Indian cuisine since 2026.</p>
+            </div>
+            <div class="footer-contact-info" style="color: #AAA;">
+                <p style="margin-bottom: 0.5rem;"><i class="fa-solid fa-envelope"
+                        style="margin-right: 0.5rem; color: var(--primary);"></i> SpiceRoutes.support@gmail.com</p>
+                <p><i class="fa-solid fa-phone" style="margin-right: 0.5rem; color: var(--primary);"></i> +91 1234567891
+                </p>
+            </div>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SpiceRoutes. All rights reserved.</p>
+        </div>
+    </footer>
+
+
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-header">
+            <h2>Your Order</h2>
+            <button class="close-cart" id="close-cart"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-body" id="cart-items-container">
+
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">₹0</span>
+            </div>
+            <button class="btn btn-primary btn-full" id="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+
+    <div class="checkout-overlay hidden" id="checkout-overlay"></div>
+    <div class="checkout-modal hidden" id="checkout-modal">
+        <div class="checkout-header">
+            <h2>Complete Your Order</h2>
+            <button class="close-checkout" id="close-checkout"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="checkout-form" class="checkout-form">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="order-name" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label>Delivery Address</label>
+                <input type="text" id="order-address" required placeholder="Enter delivery address">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="order-phone" required placeholder="Enter phone number">
+            </div>
+            <div class="checkout-summary" style="margin-bottom: 1.5rem; text-align: center; font-size: 1.2rem;">
+                <p>Total Amount: <strong id="checkout-final-total" style="color: var(--primary);">₹0</strong></p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="place-order-btn">Place Order</button>
+        </form>
+    </div>
+
+
+    <div class="profile-overlay" id="profile-overlay"></div>
+    <div class="profile-modal" id="profile-modal">
+        <div class="profile-header">
+            <h2>My Profile</h2>
+            <button class="close-profile" id="close-profile"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="profile-body">
+            <div class="profile-avatar-large" id="modal-avatar">A</div>
+            <h3 class="profile-name" id="modal-user-name">User Name</h3>
+            <p class="profile-email" id="modal-user-email">user@example.com</p>
+
+            <div class="profile-details-card" style="margin-bottom: 1rem;">
+                <i class="fa-regular fa-calendar-days" style="color: var(--primary); font-size: 1.2rem;"></i>
+                <div class="profile-detail-text"
+                    style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-left: 10px;">
+                    <span class="detail-label" style="font-weight: 700;">Member Since</span>
+                    <span class="detail-value" id="modal-member-since" style="color: var(--gray);">--/--/----</span>
+                </div>
+            </div>
+
+
+            <div class="profile-details-card" style="margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-box-open" style="color: var(--primary); font-size: 1.2rem;"></i>
+                <div class="profile-detail-text"
+                    style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-left: 10px;">
+                    <span class="detail-label" style="font-weight: 700;">Total Orders</span>
+                    <span class="detail-value" id="modal-total-orders"
+                        style="color: var(--primary); font-weight: 800; font-size: 1.2rem;">0</span>
+                </div>
+            </div>
+
+
+            <div style="width: 100%; text-align: left;">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.9rem; color: var(--gray);">Contact Number</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="tel" id="profile-phone" placeholder="Enter phone number" class="profile-input">
+                        <button id="save-phone-btn" class="btn btn-outline"
+                            style="padding: 0 1rem; border-radius: 10px;"><i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="font-size: 0.9rem; color: var(--gray);">Delivery Address</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="profile-address" placeholder="Enter default address"
+                            class="profile-input">
+                        <button id="save-address-btn" class="btn btn-outline"
+                            style="padding: 0 1rem; border-radius: 10px;"><i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="profile-footer">
+            <button id="logout-btn" class="btn btn-logout btn-full">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </div>
+
+
+    <div class="hto-overlay" id="hto-overlay"></div>
+    <div class="hto-modal" id="hto-modal">
+        <button class="hto-close" id="hto-close"><i class="fa-solid fa-xmark"></i></button>
+        <div class="hto-header">
+            <div class="hto-icon"><i class="fa-solid fa-bowl-food"></i></div>
+            <h2>How to Order</h2>
+            <p>Get your favourite Indian food in just a few easy steps!</p>
+        </div>
+        <div class="hto-steps">
+            <div class="hto-step">
+                <div class="hto-step-num">1</div>
+                <div class="hto-step-content">
+                    <h4>Browse the Menu</h4>
+                    <p>Explore our delicious dishes and select your favorites.</p>
+                </div>
+            </div>
+            <div class="hto-step">
+                <div class="hto-step-num">2</div>
+                <div class="hto-step-content">
+                    <h4>Add to Cart</h4>
+                    <p>Click on "Add to Cart" for the items you want.</p>
+                </div>
+            </div>
+            <div class="hto-step">
+                <div class="hto-step-num">3</div>
+                <div class="hto-step-content">
+                    <h4>Review Your Order</h4>
+                    <p>Check your cart, update quantity, or remove items if needed.</p>
+                </div>
+            </div>
+            <div class="hto-step">
+                <div class="hto-step-num">4</div>
+                <div class="hto-step-content">
+                    <h4>Login / Sign Up</h4>
+                    <p>Login to your account or create a new one to continue.</p>
+                </div>
+            </div>
+            <div class="hto-step">
+                <div class="hto-step-num">5</div>
+                <div class="hto-step-content">
+                    <h4>Enter Delivery Details</h4>
+                    <p>Provide your address and contact information.</p>
+                </div>
+            </div>
+            <div class="hto-step">
+                <div class="hto-step-num">6</div>
+                <div class="hto-step-content">
+                    <h4>Make Payment</h4>
+                    <p>Choose your preferred payment method (UPI, Card, COD).</p>
+                </div>
+            </div>
+            <div class="hto-step hto-step-last">
+                <div class="hto-step-num" style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">7</div>
+                <div class="hto-step-content">
+                    <h4>Order Confirmed 🎉</h4>
+                    <p>Your food is being prepared and will be delivered soon!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
