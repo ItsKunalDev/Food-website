@@ -9,8 +9,7 @@ import {
     signOut,
     updateProfile,
     GoogleAuthProvider,
-    signInWithRedirect,
-    getRedirectResult
+    signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -63,11 +62,9 @@ function showMessage(element, text) {
     }, 5000);
 }
 
-// Authentication State Observer
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // User is signed in
-        // Use displayName from auth, fallback to pending signup name, then 'Foodie'
         const pendingName = localStorage.getItem('spiceRoutesPendingName');
         const defaultName = user.email ? user.email.split('@')[0] : 'Foodie';
         const resolvedName = user.displayName || pendingName || defaultName;
@@ -79,7 +76,7 @@ onAuthStateChanged(auth, (user) => {
             displayName: resolvedName
         }));
 
-        // Update index.html Navbar if it exists
+
         if (userProfile && loginBtn) {
             loginBtn.style.display = 'none';
             userProfile.classList.remove('hidden');
@@ -87,7 +84,6 @@ onAuthStateChanged(auth, (user) => {
             const dpName = resolvedName;
             if (userNameDisplay) userNameDisplay.innerText = `Hi, ${dpName}`;
 
-            // Populate Avatar and Modal (show initials from each word)
             const initials = dpName
                 .split(' ')
                 .filter(word => word.length > 0)
@@ -110,7 +106,6 @@ onAuthStateChanged(auth, (user) => {
                 modalMemberSince.innerText = cTime.toLocaleDateString();
             }
 
-            // Load and Save Extended Profile Details
             const phoneInput = document.getElementById('profile-phone');
             const addressInput = document.getElementById('profile-address');
             const totalOrders = document.getElementById('modal-total-orders');
@@ -118,7 +113,6 @@ onAuthStateChanged(auth, (user) => {
             const saveAddressBtn = document.getElementById('save-address-btn');
 
             if (phoneInput && addressInput && totalOrders) {
-                // Load saved data safely from local storage mapped to uid
                 const userExtData = JSON.parse(localStorage.getItem(`spiceRoutesExt_${user.uid}`)) || { phone: '', address: '', orders: 0 };
 
                 phoneInput.value = userExtData.phone || '';
@@ -141,15 +135,12 @@ onAuthStateChanged(auth, (user) => {
             }
         }
 
-        // If on login page, redirect to home
         if (window.location.pathname.includes('login.html')) {
             window.location.href = 'index.html';
         }
     } else {
-        // User is signed out
         localStorage.removeItem('spiceRoutesUser');
 
-        // Update index.html Navbar if it exists
         if (userProfile && loginBtn) {
             loginBtn.style.display = 'inline-block';
             userProfile.classList.add('hidden');
@@ -163,34 +154,24 @@ googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 const googleAuthBtn = document.getElementById('google-auth-btn');
 
-// Handle the redirect result when returning from Google Sign-In
-getRedirectResult(auth).then((result) => {
-    if (result && result.user) {
-        showMessage(successMsg, `Welcome, ${result.user.displayName}! Redirecting...`);
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1000);
-    }
-}).catch((error) => {
-    if (error.code && error.code !== 'auth/no-redirect-operation-pending') {
-        let message = "Google Sign-In failed: " + error.message;
-        if (error.code === 'auth/unauthorized-domain') {
-            message = "Error: This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.";
-        }
-        showMessage(errorMsg, message);
-        console.error("Google Redirect Error:", error);
-    }
-});
-
 if (googleAuthBtn) {
     googleAuthBtn.addEventListener('click', async () => {
         try {
             googleAuthBtn.disabled = true;
-            googleAuthBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Redirecting to Google...';
-            await signInWithRedirect(auth, googleProvider);
+            googleAuthBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+            const result = await signInWithPopup(auth, googleProvider);
+            if (result && result.user) {
+                showMessage(successMsg, `Welcome, ${result.user.displayName || 'Foodie'}! Redirecting...`);
+                // onAuthStateChanged will handle the redirect, but we can also trigger it here
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            }
         } catch (error) {
             let message = "Sign-In failed: " + error.message;
-            if (error.code === 'auth/unauthorized-domain') {
+            if (error.code === 'auth/popup-closed-by-user') {
+                message = "Sign-in cancelled by user.";
+            } else if (error.code === 'auth/unauthorized-domain') {
                 message = "Error: This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.";
             }
             showMessage(errorMsg, message);
@@ -218,7 +199,7 @@ if (signupForm) {
         submitBtn.disabled = true;
 
         try {
-            // Save name before creating user so onAuthStateChanged can use it immediately
+
             localStorage.setItem('spiceRoutesPendingName', name);
 
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
