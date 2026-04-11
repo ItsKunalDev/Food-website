@@ -1,5 +1,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -8,19 +9,22 @@ import {
     signOut,
     updateProfile,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithRedirect,
+    getRedirectResult
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAlcGyMeL_e3ZsqEMD2z1pnX1wBpJcORyY",
-    authDomain: "deepfake-detection-989e1.firebaseapp.com",
-    projectId: "deepfake-detection-989e1",
-    storageBucket: "deepfake-detection-989e1.firebasestorage.app",
-    messagingSenderId: "415409961848",
-    appId: "1:415409961848:web:ee5d4a73c70a60509d268d"
+    apiKey: "AIzaSyAQBXVoMpJFjQd8JgkYpMMbLFDtVxod-mk",
+    authDomain: "spiceroutes-434fd.firebaseapp.com",
+    projectId: "spiceroutes-434fd",
+    storageBucket: "spiceroutes-434fd.firebasestorage.app",
+    messagingSenderId: "447303129354",
+    appId: "1:447303129354:web:d1d1f57765088f98db82f3",
+    measurementId: "G-G1DMKRHZJ8"
 };
 
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 
 
@@ -63,10 +67,16 @@ function showMessage(element, text) {
 onAuthStateChanged(auth, (user) => {
     if (user) {
         // User is signed in
+        // Use displayName from auth, fallback to pending signup name, then 'Foodie'
+        const pendingName = localStorage.getItem('spiceRoutesPendingName');
+        const defaultName = user.email ? user.email.split('@')[0] : 'Foodie';
+        const resolvedName = user.displayName || pendingName || defaultName;
+        if (pendingName) localStorage.removeItem('spiceRoutesPendingName');
+
         localStorage.setItem('spiceRoutesUser', JSON.stringify({
             uid: user.uid,
             email: user.email,
-            displayName: user.displayName || 'Foodie'
+            displayName: resolvedName
         }));
 
         // Update index.html Navbar if it exists
@@ -74,15 +84,20 @@ onAuthStateChanged(auth, (user) => {
             loginBtn.style.display = 'none';
             userProfile.classList.remove('hidden');
 
-            const dpName = user.displayName || 'Foodie';
+            const dpName = resolvedName;
             if (userNameDisplay) userNameDisplay.innerText = `Hi, ${dpName}`;
 
-            // Populate Avatar and Modal
-            const initial = dpName.charAt(0).toUpperCase();
+            // Populate Avatar and Modal (show initials from each word)
+            const initials = dpName
+                .split(' ')
+                .filter(word => word.length > 0)
+                .slice(0, 2)
+                .map(word => word.charAt(0).toUpperCase())
+                .join('');
             const navAvatar = document.getElementById('nav-avatar');
             const modalAvatar = document.getElementById('modal-avatar');
-            if (navAvatar) navAvatar.innerText = initial;
-            if (modalAvatar) modalAvatar.innerText = initial;
+            if (navAvatar) navAvatar.innerText = initials;
+            if (modalAvatar) modalAvatar.innerText = initials;
 
             const modalUserName = document.getElementById('modal-user-name');
             const modalUserEmail = document.getElementById('modal-user-email');
@@ -144,22 +159,44 @@ onAuthStateChanged(auth, (user) => {
 
 
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
 const googleAuthBtn = document.getElementById('google-auth-btn');
+
+// Handle the redirect result when returning from Google Sign-In
+getRedirectResult(auth).then((result) => {
+    if (result && result.user) {
+        showMessage(successMsg, `Welcome, ${result.user.displayName}! Redirecting...`);
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
+    }
+}).catch((error) => {
+    if (error.code && error.code !== 'auth/no-redirect-operation-pending') {
+        let message = "Google Sign-In failed: " + error.message;
+        if (error.code === 'auth/unauthorized-domain') {
+            message = "Error: This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.";
+        }
+        showMessage(errorMsg, message);
+        console.error("Google Redirect Error:", error);
+    }
+});
 
 if (googleAuthBtn) {
     googleAuthBtn.addEventListener('click', async () => {
         try {
-            await signInWithPopup(auth, googleProvider);
-            showMessage(successMsg, 'Google Sign-In successful! Redirecting...');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+            googleAuthBtn.disabled = true;
+            googleAuthBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Redirecting to Google...';
+            await signInWithRedirect(auth, googleProvider);
         } catch (error) {
             let message = "Sign-In failed: " + error.message;
-            if (error.code === 'auth/popup-closed-by-user') message = "Sign-In popup was closed.";
-            if (error.code === 'auth/unauthorized-domain') message = "Error: Please run via Localhost, not file://";
+            if (error.code === 'auth/unauthorized-domain') {
+                message = "Error: This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.";
+            }
             showMessage(errorMsg, message);
             console.error("Google Auth Error:", error);
+            googleAuthBtn.disabled = false;
+            googleAuthBtn.innerHTML = '<i class="fa-brands fa-google"></i> Continue with Google';
         }
     });
 }
@@ -181,6 +218,9 @@ if (signupForm) {
         submitBtn.disabled = true;
 
         try {
+            // Save name before creating user so onAuthStateChanged can use it immediately
+            localStorage.setItem('spiceRoutesPendingName', name);
+
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
             await updateProfile(userCredential.user, {
