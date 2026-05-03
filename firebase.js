@@ -13,9 +13,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAQBXVoMpJFjQd8JgkYpMMbLFDtVxod-mk",
-    authDomain: "spiceroutes-434fd.firebaseapp.com",
-    projectId: "spiceroutes-434fd",
+    apiKey: "Your Api Key Name ",
+    authDomain: "Your Domain Name",
+    projectId: "Your Project Id ",
     storageBucket: "spiceroutes-434fd.firebasestorage.app",
     messagingSenderId: "447303129354",
     appId: "1:447303129354:web:d1d1f57765088f98db82f3",
