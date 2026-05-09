@@ -13,13 +13,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "Your Api Key Name ",
-    authDomain: "Your Domain Name",
-    projectId: "Your Project Id ",
-    storageBucket: "spiceroutes-434fd.firebasestorage.app",
-    messagingSenderId: "447303129354",
-    appId: "1:447303129354:web:d1d1f57765088f98db82f3",
-    measurementId: "G-G1DMKRHZJ8"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
@@ -136,7 +136,8 @@ onAuthStateChanged(auth, (user) => {
         }
 
         if (window.location.pathname.includes('login.html')) {
-            window.location.href = 'index.html';
+            const isAdmin = user.email && user.email.toLowerCase().includes('admin');
+            window.location.href = isAdmin ? 'admin.html' : 'index.html';
         }
     } else {
         localStorage.removeItem('spiceRoutesUser');
@@ -164,7 +165,8 @@ if (googleAuthBtn) {
                 showMessage(successMsg, `Welcome, ${result.user.displayName || 'Foodie'}! Redirecting...`);
                 // onAuthStateChanged will handle the redirect, but we can also trigger it here
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    const isAdmin = result.user.email && result.user.email.toLowerCase().includes('admin');
+                    window.location.href = isAdmin ? 'admin.html' : 'index.html';
                 }, 1000);
             }
         } catch (error) {
@@ -210,7 +212,8 @@ if (signupForm) {
 
             showMessage(successMsg, 'Account created successfully! Redirecting...');
             setTimeout(() => {
-                window.location.href = 'index.html';
+                const isAdmin = email.toLowerCase().includes('admin');
+                window.location.href = isAdmin ? 'admin.html' : 'index.html';
             }, 1000);
         } catch (error) {
             let message = "An error occurred during sign up.";
@@ -246,7 +249,8 @@ if (loginForm) {
 
             showMessage(successMsg, 'Login successful! Redirecting...');
             setTimeout(() => {
-                window.location.href = 'index.html';
+                const isAdmin = email.toLowerCase().includes('admin');
+                window.location.href = isAdmin ? 'admin.html' : 'index.html';
             }, 1000);
         } catch (error) {
             let message = "Invalid email or password.";
