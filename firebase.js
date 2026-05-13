@@ -13,13 +13,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAQBXVoMpJFjQd8JgkYpMMbLFDtVxod-mk",
-    authDomain: "spiceroutes-434fd.firebaseapp.com",
-    projectId: "spiceroutes-434fd",
-    storageBucket: "spiceroutes-434fd.firebasestorage.app",
-    messagingSenderId: "447303129354",
-    appId: "1:447303129354:web:d1d1f57765088f98db82f3",
-    measurementId: "G-G1DMKRHZJ8"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
